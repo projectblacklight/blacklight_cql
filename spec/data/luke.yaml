@@ -1,0 +1,75 @@
+---  
+:fields:  
+  :subject_unstem_search:  
+    :schema: IT-M---------
+    :type: textNoStem
+    :dynamicBase: "*_unstem_search"
+  :url_suppl_display:  
+    :schema: --SM---------
+    :type: string
+    :dynamicBase: "*_display"
+  :timestamp:  
+    :schema: I-S----O----l
+    :type: date
+  :title_spell:  
+    :schema: IT-M---------
+    :type: textSpell
+    :dynamicBase: "*spell"
+  :format:  
+    :schema: I-SM---O----l
+    :type: string
+  :subtitle_unstem_search:  
+    :schema: IT-M---------
+    :type: textNoStem
+    :dynamicBase: "*_unstem_search"
+  :text:  
+    :schema: IT-M---------
+    :type: text
+  :author_facet:  
+    :schema: I--M---O----l
+    :type: string
+    :dynamicBase: "*_facet"
+  :material_type_display:  
+    :schema: --SM---------
+    :type: string
+    :dynamicBase: "*_display"
+  :isbn_t:  
+    :schema: ITSM---O-----
+    :type: isbn
+    :dynamicBase: "*_t"
+  :spell:  
+    :schema: IT-M---------
+    :type: textSpell
+    :dynamicBase: "*spell"
+  :url_fulltext_display:  
+    :schema: --SM---------
+    :type: string
+    :dynamicBase: "*_display"
+:info:  
+  :NOTE: Document Frequency (df) is not updated when a document is marked for deletion.  df values include deleted documents.
+  :key:  
+    :V: TermVector Stored
+    :L: Lazy
+    :l: Sort Missing Last
+    :M: Multivalued
+    :B: Binary
+    :C: Compressed
+    :o: Store Offset With TermVector
+    :O: Omit Norms
+    :p: Store Position With TermVector
+    :f: Sort Missing First
+    :S: Stored
+    :I: Indexed
+    :T: Tokenized
+:responseHeader:  
+  :status: 0
+  :QTime: 6
+:index:  
+  :hasDeletions: false
+  :directory: org.apache.lucene.store.:NIOFSDirectory:org.apache.lucene.store.NIOFSDirectory@/usr/share/jetty6/solr/dev/data/index
+  :lastModified: "2010-06-:15T14::23:37Z"
+  :current: true
+  :numDocs: 994
+  :version: 1265038861837
+  :optimized: true
+  :maxDoc: 994
