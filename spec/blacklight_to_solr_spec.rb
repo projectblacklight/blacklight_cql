@@ -13,10 +13,10 @@ describe "blacklight_to_solr" do
               :display_label => "Title",
               :key => "title",
               :solr_parameters => {
-                :qf => "something"
+                :qf => "ti_something"
               },
               :solr_local_parameters => {
-                :pf => "$something"
+                :pf => "$ti_something"
               }
             },
             {
@@ -39,8 +39,12 @@ describe "blacklight_to_solr" do
   it "should convert to nested queries with local dismax param definitions" do
     output = @parser.parse('title = "foo +bar" AND author = smith OR some_solr_field = frog').to_bl_solr(@config)
 
-    output.should == "( (  _query_:\"{!dismax qf=something pf=$something} foo +bar \"  AND  _query_:\"{!dismax qf='au_something^10 au_else^100'} smith \"  ) OR some_solr_field:frog )"
+    output.should == "( (  _query_:\"{!dismax qf=ti_something pf=$ti_something} foo +bar \"  AND  _query_:\"{!dismax qf='au_something^10 au_else^100'} smith \"  ) OR some_solr_field:frog )"
   end
 
+  it "should use default BL config'd search for solr.dismax or '=' relation" do
+    output = @parser.parse("cql.serverChoice solr.dismax \"foo bar\"").to_bl_solr(@config)
 
+    output.should == " _query_:\"{!dismax qf=ti_something pf=$ti_something} foo bar \" "    
+  end
 end

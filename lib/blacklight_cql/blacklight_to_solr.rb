@@ -1,3 +1,5 @@
+require 'cql_ruby'
+
 # Patch CqlRuby to provide a #to_bl_solr implementation, which is like
 # to_solr, but aware of Blacklight search_field defintions for dismax relation
 # queries.
@@ -17,11 +19,10 @@
 #
 # argument to #to_bl_solr is a 'config' object that duck-types to
 # Blacklight::SearchFields , for accessing search fields config.
-require 'cql_ruby'
 module CqlRuby
   to_solr_defaults[:solr_field_prefix] = "lsolr"
   to_solr_defaults[:blacklight_field_prefix] = "local"
-  to_solr_defaults[:dismax_relation_prefix] = "solr.dismax"
+  to_solr_defaults[:dismax_relation] = "solr.dismax"
 
 
   CqlNode.send(:include,
@@ -92,9 +93,11 @@ module CqlRuby
           #for cql.serverChoice and dismax relation, we do dismax with
           #default field, otherwise we'll let it fall through to #to_solr
           if( @index.downcase == "cql.serverchoice" &&
-              @relation.base.downcase == CqlRuby.to_solr_defaults[:dismax_relation].downcase)
+              [CqlRuby.to_solr_defaults[:dismax_relation].downcase,
+               "="].include?(@relation.modifier_set.base.downcase)
+             )
              index_prefix = CqlRuby.to_solr_defaults[:blacklight_index_prefix]
-             index = config.default_search_field
+             index = config.default_search_field[:key]
           end
           # If no prefix, we use local one if we can
           if ( index_prefix == nil)
