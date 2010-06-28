@@ -1,7 +1,9 @@
 = Blacklight-cql
 
 An extension for the Blacklight solr search front-end.  
+
 http://projectblacklight.org/
+
 http://github.com/projectblacklight/blacklight
 
 Provides for CQL search queries that map to Solr and Blacklight fields.
@@ -9,37 +11,57 @@ Provides for CQL search queries that map to Solr and Blacklight fields.
 
 = Installation
 
-Add gem dependency. That's all you need to do to install, it will work. 
+Add to your local app's environment.rb:
+ config.gem "blacklight_cql"
+
+Run "rake gems:install".  That's it, you now have CQL support in your Blacklight.  
 
 See below for optional configuration to change default behavior.  
 
 = Use
 
-Both raw solr fields and Blacklight-configured psuedo-fields are available as CQL indexes in CQL querries. They can be mixed and matched. An index without a prefix will be assumed to be a Blacklight-configured field if a matching field exists, otherwise a solr field. Explicit CQL prefixes can be used to disambiguate:  
+ http://your.blacklight.com/catalog?search_field=cql&q=[cql query here]
+ 
+Or for an atom response for instance, 
 
-"lsolr.field" => solr prefix
+ http://your.blacklight.com/catalog.atom?search_field=cql&q=[cql query here]
 
-"local.some_field" => blacklight configured dismax psuedo-field
+See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
+ 
+Any search_field you have configured in Blacklight.config[:search_field] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a CQL expression as a value.
+
+  some_field solr.dismax "some +dismax -query \"a phrase\" "
+  
+For dismax fields, the "=" server-choice relation means the same thing:
+
+  some_field = "some +dismax -query \"a phrase\" "
+
+(oops, backslash quote escaping is currently broken need to fix it.)
+
+Any Solr indexed field is also available as a CQL index, with a much greater range of CQL relations supported. 
+
+  solr_field cql.adj "some phrase" AND solr_year within "1990 2000"
+  
+Solr indexed field CQL support is provided by the cql_ruby gem, for details on relations supported see: http://cql-ruby.rubyforge.org/svn/trunk/lib/cql_ruby/cql_to_solr.rb
+  
+If there is a direct solr indexed field with the same name as a Blacklight-configured dismax field, the BL field will take precedence. You can use explicit CQL "context set" prefixes to disambiguate.
+
+[lsolr.field]
+  "lsolr" prefix means a direct solr indexed field
+[local.some_field]
+  "local" prefix means a dismax field configured in Blacklight.config[:search_fields]
 
 These prefixes can be changed, see configuration below. 
 
-By default, a CQL search is delivered to Blacklight in the 'q' URL paramater, with parameter &search_field=cql to designate a CQL search.  (This key can be changed in config). CQL does need to be URL-escaped in the URL, of course.
-
-  http://some.blacklight.com/catalog.atom?search_field=cql&q=[cql query]
-
-For Blacklight-configured psuedo-fields, the only relation that is supported is the custom solr.dismax relation -- a query according to dismax parser syntax. All configured solr params for this search field (qf, pf, mm, etc) will be sent along with the query. 
-
-For raw Solr fields, most of the standard CQL relations are supported. 
-
 Raw solr fields and Blacklight config'ed fields CAN be mixed together in a single CQL query. 
 
-  (lsolr.title_t any "one two three" AND lsolr.author_t all "smith john") OR local.title = "my dismax title query"   
-  ==>
+  (lsolr.title_t any "one two three" AND lsolr.author_t all "smith john") OR local.title = "my dismax title query"
+  
+CQL *does* need to be URL escaped in a URL, of course:
+
   http://some.blacklight.com/catalog.atom?search_field=cql&q=%28lsolr.title_t+any+%22one+two+three%22+AND+lsolr.author_t+all+%22smith+john%22%29+OR+local.title+%3D+%22my+dismax+title+query%22
 
-For Blacklight-configured fields, the CQL server choice "=" relation is chosen to be solr.dismax.  For raw solr fields, the server choice "=" relation is mapped to cql.adj.  
-
-For blacklight-configured search fields, the cql.serverChoice index maps to your default blacklight-configed field.  
+For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your default blacklight-configed field and solr.dismax relation.  Otherwise, it maps to a direct solr field query with "adj", and the solr indexed field generally ends up being "text", although this depends on your configuration. 
 
 = SRU/ZeeRex Explain
 
@@ -65,18 +87,17 @@ As in the example above, using :local_solr_paramaters is probably a good idea to
 
 = TO DO
 
- * Support more CQL relations on blacklight dismax fields. Right now only dismax queries are supported. We could also support:
-   * cql.all (set mm to 100%)
-   * cql.adj (phrase search with qs set to 0)
-   * cql.any 
-   * range querries on dismax fields? Maybe. <, <=, >, >=, within
-   * <> on dismax fields, similar to how it works on raw solr. 
- * Is there a simple way to support CQL PROX boolean operator? Not sure. That's a weird operator in CQL, it makes it possible to specify things which make no sense, like onefield = val PROX anotherfield=val2 
- * Support CQL sortBy clauses mapped to Blacklight sort param. We can't tell which solr fields are available for sorting solely from luke, will need additional config to advertise in Explain. 
- * Add CQL relation modifiers on solr.dismax that let you specify arbitrary solr/dismax query parameters. (Add to solr context set too). 
- * Support relation modifier on cql.adj that maps to qs
- * support CQL context set 'fuzzy' modifier, to have some effect on mm, ps, qs, etc. 
+* Support more CQL relations on blacklight dismax fields. Right now only dismax queries are supported. We could also support:
+ * cql.all (set mm to 100%)
+ * cql.adj (phrase search with qs set to 0)
+ * cql.any 
+ * range querries on dismax fields? Maybe. <, <=, >, >=, within
+ * <> on dismax fields, similar to how it works on raw solr. 
+* Is there a simple way to support CQL PROX boolean operator? Not sure. That's a weird operator in CQL, it makes it possible to specify things which make no sense, like onefield = val PROX anotherfield=val2 
+* Support CQL sortBy clauses mapped to Blacklight sort param. We can't tell which solr fields are available for sorting solely from luke, will need additional config to advertise in Explain. 
+* Add CQL relation modifiers on solr.dismax that let you specify arbitrary solr/dismax query parameters. (Add to solr context set too). 
+* Support relation modifier on cql.adj that maps to qs
+* support CQL context set 'fuzzy' modifier, to have some effect on mm, ps, qs, etc. 
+* *Big one*:  Figure out how to embed the explain and advertise the CQL in the BL OpenSearch description (including OpenSearch response in Atom).  Tricky from BL architecture to inject this into BL, also some dispute about the best way for the actual XML to look to support this. 
 
-Big one:  Figure out how to embed the explain and advertise the CQL in the BL OpenSearch description.  Tricky from BL architecture to inject this into BL, also some dispute about the best way for the actual XML to look to support this. 
-
-Copyright 2010 Jonathan Rochkind, released under the MIT license
+Copyright 2010 Jonathan Rochkind/Johns Hopkins University, released under the MIT license
