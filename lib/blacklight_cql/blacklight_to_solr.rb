@@ -16,7 +16,8 @@
 # blacklight_field_prefix.
 #
 # argument to #to_bl_solr is a 'config' object that duck-types to
-# Blacklight::SearchFields , for accessing search fields config. 
+# Blacklight::SearchFields , for accessing search fields config.
+require 'cql_ruby'
 module CqlRuby
   to_solr_defaults[:solr_field_prefix] = "lsolr"
   to_solr_defaults[:blacklight_field_prefix] = "local"
