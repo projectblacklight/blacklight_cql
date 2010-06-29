@@ -30,11 +30,11 @@ See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax 
  
 Any search_field you have configured in Blacklight.config[:search_fields] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a CQL expression as a value.
 
-  some_field solr.dismax "some +dismax -query \"a phrase\" "
+  some_field solr.dismax "term +required -negate \"a phrase\" "
   
 For dismax fields, the "=" server-choice relation means the same thing:
 
-  some_field = "some +dismax -query \"a phrase\" "
+  some_field = "term +required -negate \"a phrase\" "
 
 Any Solr indexed field is also available as a CQL index. A much greater range of CQL relations are supported when you specify a Solr indexed field directly.  
 
