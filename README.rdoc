@@ -61,7 +61,7 @@ CQL *does* need to be URL escaped in a URL, of course:
 
   http://some.blacklight.com/catalog.atom?search_field=cql&q=%28lsolr.title_t+any+%22one+two+three%22+AND+lsolr.author_t+all+%22smith+john%22%29+OR+local.title+%3D+%22my+dismax+title+query%22
 
-For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your default blacklight-configed field and solr.dismax relation.  Otherwise, it maps to a direct solr field query with "adj", and the solr indexed field generally ends up being "text", although this depends on your configuration. 
+For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your default blacklight-configed field and solr.dismax relation.  cql.serverChoice used with other relations will map to a solr indexed field, usually 'text' although that can depend on your configuration (both solr and plugin config). 
 
 = SRU/ZeeRex Explain
 
