@@ -2,7 +2,7 @@
 
 An extension for the Blacklight solr search front-end.  
 
-http://projectblacklight.org/
+http://projectblacklight.org
 
 http://github.com/projectblacklight/blacklight
 
@@ -20,23 +20,21 @@ See below for optional configuration to change default behavior.
 
 = Use
 
- http://your.blacklight.com/catalog?search_field=cql&q=[cql query here]
+ http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
  
 Or for an atom response for instance, 
 
- http://your.blacklight.com/catalog.atom?search_field=cql&q=[cql query here]
+ http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
 
 See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
  
-Any search_field you have configured in Blacklight.config[:search_field] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a CQL expression as a value.
+Any search_field you have configured in Blacklight.config[:search_fields] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a CQL expression as a value.
 
   some_field solr.dismax "some +dismax -query \"a phrase\" "
   
 For dismax fields, the "=" server-choice relation means the same thing:
 
   some_field = "some +dismax -query \"a phrase\" "
-
-(oops, backslash quote escaping is currently broken need to fix it.)
 
 Any Solr indexed field is also available as a CQL index, with a much greater range of CQL relations supported. 
 
@@ -78,26 +76,67 @@ Note that at present only the custom solr.dismax relation is supported on Blackl
 
 = Configuration
 
-Blacklight-configured search fields are taken from Blacklight.config[:search_fields], which you probably have already set up in config/initializers/blacklight_config.rb.  If you would like to add additional fields for CQL, and you don't want them to show up in your Blacklight search form, simply add them to Blacklight.config[:search_fields] with :show_in_simple_select => false
+== URL cql key, and cql label
+
+A psuedo-blacklight-search-field is added by the Cql plugin to indicate a CQL search in the URL and BL processing.  You can change the definition of this psuedo-field however you want to change the URL search_field key, the label for a CQL search echoed back to the user in HTML, or even to add some additional Solr parameters for the top-level Solr query for CQL searches. The value is a hash with the same semantics as other Blacklight.config[:search_fields] elements.  
+
+In an initializer:
+ BlacklightCql::SolrHelperExtension.psuedo_search_field = {
+  :key => "super_search", 
+  :display_label => "The Super Search",
+  :solr_parameters => { "mm" => "100%" }
+ }
+
+== Dismax search field configuration
+ 
+All fields configured in Blacklight.config[:search_fields] are available as CQL indexes. If you'd like to make more dismax-configured search fields available in CQL but not the standard HTML search select menu, simply add them with :show_in_simple_select = false, eg:
 
   Blacklight.config[:search_fields] << {:key => "only_in_cql", :show_in_simple_select => false, :local_solr_parameters => { :qf => "$my_special_qf"}} 
 
-As in the example above, using :local_solr_paramaters is probably a good idea to keep your Solr search logs from getting out of control. Use of :local_solr_params with a dollar-sign dereference generally requires you to specify default values for the variable to be dereferneced in solrconfig.xml. However, just supplying literal values in :solr_paramaters is also supported and will work fine, it will just result in very long search querries in your solr query log. 
+As in the example above, you may want to use :local_solr_parameters referencing dollar-sign parameters that will be defined in your solrconfig.xml and de-referenced by Solr. This will keep your CQL-generated Solr querries a lot more readable in your logs and debugging. However, this feature is not available in Blacklight 2.5 (edge, or future 2.6). 
+  
+Simply supplying literal values in :solr_paramaters is also supported and will work fine, it will just result in very long search querries in your solr query log.
 
+== CQL context set prefixes
 
+You can change the prefix used for specifying a CQL index that is a direct solr field, or a Blacklight dismax configured field.  In a Rails initializer:
+
+ CqlRuby.to_solr_defaults[:solr_field_prefix] = "my_solr"
+ CqlRuby.to_solr_defaults[:blacklight_field_prefix] = "my_blacklight_fields"
+
+== Defaults from CqlRuby for direct solr indexed field querries. 
+
+For direct-solr-field operations, there are additional defaults that can be set, supported by CqlRuby. See: http://cql-ruby.rubyforge.org/svn/trunk/lib/cql_ruby/cql_to_solr.rb
+
+Eg:
+
+  CqlRuby.to_solr_defaults[:default_index] = "solr_index"
+  CqlRuby.to_solr_defaults[:all_index] = "solr_mega_index"
+  CqlRuby.to_solr_defaults[:default_relation] = "cql.any"
+  
 = TO DO
 
 * Support more CQL relations on blacklight dismax fields. Right now only dismax queries are supported. We could also support:
- * cql.all (set mm to 100%)
- * cql.adj (phrase search with qs set to 0)
- * cql.any 
- * range querries on dismax fields? Maybe. <, <=, >, >=, within
- * <> on dismax fields, similar to how it works on raw solr. 
+** cql.all (set mm to 100%)
+** cql.adj (phrase search with qs set to 0)
+** cql.any 
+** range querries on dismax fields? Maybe. <, <=, >, >=, within
+** <> on dismax fields, similar to how it works on raw solr. 
 * Is there a simple way to support CQL PROX boolean operator? Not sure. That's a weird operator in CQL, it makes it possible to specify things which make no sense, like onefield = val PROX anotherfield=val2 
 * Support CQL sortBy clauses mapped to Blacklight sort param. We can't tell which solr fields are available for sorting solely from luke, will need additional config to advertise in Explain. 
 * Add CQL relation modifiers on solr.dismax that let you specify arbitrary solr/dismax query parameters. (Add to solr context set too). 
 * Support relation modifier on cql.adj that maps to qs
 * support CQL context set 'fuzzy' modifier, to have some effect on mm, ps, qs, etc. 
 * *Big one*:  Figure out how to embed the explain and advertise the CQL in the BL OpenSearch description (including OpenSearch response in Atom).  Tricky from BL architecture to inject this into BL, also some dispute about the best way for the actual XML to look to support this. 
+
+= Use without Blacklight?
+
+Most of the code in this plugin was written to potentially be useful in other projects, not Blacklight, not neccesarily even Rails.  However, the gem initialization code assumes Blacklight in order to insert it's hooks into Blacklight properly. This can probably be refactored to make it easier to use this gem in a non-BL or even non-Rails app, let me know if you are someone who has an actual need/plan for this, and I can possibly help.  
+
+= Acknolwedgements
+
+Thanks to Chick Markley for writing the CqlRuby gem that provides the fundamental functionality here, and for making me a committer on the project. Thanks to Mike Taylor for writing the original Java CQL parser that Chick's work was based on. 
+
+
 
 Copyright 2010 Jonathan Rochkind/Johns Hopkins University, released under the MIT license
