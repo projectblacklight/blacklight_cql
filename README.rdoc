@@ -86,9 +86,12 @@ In an initializer:
  BlacklightCql::SolrHelperExtension.psuedo_search_field = {
   :key => "super_search", 
   :display_label => "The Super Search",
-  :solr_parameters => { "mm" => "100%" }
+  :solr_parameters => { "mm" => "100%" },
+  :show_in_simple_select => false
  }
 
+Or leave out the ":show_in_simple_select => false" to make manual CQL entry an option in your BL search.  
+ 
 == Dismax search field configuration
  
 All fields configured in Blacklight.config[:search_fields] are available as CQL indexes. If you'd like to make more dismax-configured search fields available in CQL but not the standard HTML search select menu, simply add them with :show_in_simple_select = false, eg:
