@@ -36,6 +36,7 @@ begin
     
     gemspec.add_development_dependency("markup_validity")
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
