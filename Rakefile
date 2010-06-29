@@ -32,7 +32,7 @@ begin
     gemspec.homepage = "http://github.com/projectblacklight/blacklight_cql"
     gemspec.authors = ["Jonathan Rochkind"]
     
-    gemspec.add_dependency("cql-ruby", ">=0.8.0")
+    gemspec.add_dependency("cql-ruby", ">=0.8.1")
     
     gemspec.add_development_dependency("markup_validity")
   end
