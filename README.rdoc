@@ -126,13 +126,14 @@ Eg:
   * cql.adj (phrase search with qs set to 0)
   * cql.any 
   * range querries on dismax fields? Maybe. <, <=, >, >=, within
-  * <> on dismax fields, similar to how it works on raw solr. 
+  * <> on dismax fields, similar to how it works on raw solr.
+* *Big one*:  Figure out how to embed the explain and advertise the CQL in the BL OpenSearch description (including OpenSearch response in Atom).  Tricky from BL architecture to inject this into BL, also some dispute about the best way for the actual XML to look to support this. 
 * Is there a simple way to support CQL PROX boolean operator? Not sure. That's a weird operator in CQL, it makes it possible to specify things which make no sense, like onefield = val PROX anotherfield=val2 
 * Support CQL sortBy clauses mapped to Blacklight sort param. We can't tell which solr fields are available for sorting solely from luke, will need additional config to advertise in Explain. 
 * Add CQL relation modifiers on solr.dismax that let you specify arbitrary solr/dismax query parameters. (Add to solr context set too). 
 * Support relation modifier on cql.adj that maps to qs
 * support CQL context set 'fuzzy' modifier, to have some effect on mm, ps, qs, etc. 
-* *Big one*:  Figure out how to embed the explain and advertise the CQL in the BL OpenSearch description (including OpenSearch response in Atom).  Tricky from BL architecture to inject this into BL, also some dispute about the best way for the actual XML to look to support this. 
+* Allow you to specify in config mappings from DC or other existing context sets to your local indexes, which would then be advertised in the Explain. 
 
 = Use without Blacklight?
 
