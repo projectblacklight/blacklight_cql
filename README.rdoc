@@ -36,7 +36,7 @@ For dismax fields, the "=" server-choice relation means the same thing:
 
   some_field = "some +dismax -query \"a phrase\" "
 
-Any Solr indexed field is also available as a CQL index, with a much greater range of CQL relations supported. 
+Any Solr indexed field is also available as a CQL index. A much greater range of CQL relations are supported when you specify a Solr indexed field directly.  
 
   solr_field cql.adj "some phrase" AND solr_year within "1990 2000"
   
@@ -99,7 +99,7 @@ Simply supplying literal values in :solr_paramaters is also supported and will w
 
 == CQL context set prefixes
 
-You can change the prefix used for specifying a CQL index that is a direct solr field, or a Blacklight dismax configured field.  In a Rails initializer:
+You can change the CQL "context set" prefix used for specifying a CQL index that is a direct solr field, or a Blacklight dismax configured field.  In a Rails initializer:
 
  CqlRuby.to_solr_defaults[:solr_field_prefix] = "my_solr"
  CqlRuby.to_solr_defaults[:blacklight_field_prefix] = "my_blacklight_fields"
@@ -117,11 +117,11 @@ Eg:
 = TO DO
 
 * Support more CQL relations on blacklight dismax fields. Right now only dismax queries are supported. We could also support:
-** cql.all (set mm to 100%)
-** cql.adj (phrase search with qs set to 0)
-** cql.any 
-** range querries on dismax fields? Maybe. <, <=, >, >=, within
-** <> on dismax fields, similar to how it works on raw solr. 
+  * cql.all (set mm to 100%)
+  * cql.adj (phrase search with qs set to 0)
+  * cql.any 
+  * range querries on dismax fields? Maybe. <, <=, >, >=, within
+  * <> on dismax fields, similar to how it works on raw solr. 
 * Is there a simple way to support CQL PROX boolean operator? Not sure. That's a weird operator in CQL, it makes it possible to specify things which make no sense, like onefield = val PROX anotherfield=val2 
 * Support CQL sortBy clauses mapped to Blacklight sort param. We can't tell which solr fields are available for sorting solely from luke, will need additional config to advertise in Explain. 
 * Add CQL relation modifiers on solr.dismax that let you specify arbitrary solr/dismax query parameters. (Add to solr context set too). 
