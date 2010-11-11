@@ -65,7 +65,7 @@ For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your 
 
 = SRU/ZeeRex Explain
 
-This plugin does *not* provide a full SRU server. However, a ZeeRex/SRU [[explain|http://explain.z3950.org/overview/index.html]] document is provided by the plugin to advertise, in machine-readable format, what CQL indexes (ie, search fields) are provided by the server, and what relations are supported on each search field. 
+This plugin does *not* provide a full SRU/SRW server. However, a ZeeRex/SRU explain document is provided by the plugin to advertise, in machine-readable format, what CQL indexes (ie, search fields) are provided by the server, and what relations are supported on each search field. http://explain.z3950.org/
 
 The explain document can be found at /catalog/explain on your server. (This URL end-point is not presently configurable). 
 
