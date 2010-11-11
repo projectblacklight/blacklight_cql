@@ -30,7 +30,7 @@ Or for an atom response for instance,
 
 See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
  
-Any search_field you have configured in Blacklight.config[:search_fields] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a CQL expression as a value. They are referenced in the CQL by their :key in the BL config. 
+Any search_field you have configured in Blacklight.config[:search_fields] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a dismax expression as a value. They are referenced in the CQL by their :key in the BL config. 
 
   some_field solr.dismax "term +required -negate \"a phrase\" "
   
