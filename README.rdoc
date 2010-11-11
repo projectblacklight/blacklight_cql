@@ -6,7 +6,7 @@ http://projectblacklight.org
 
 http://github.com/projectblacklight/blacklight
 
-Provides for CQL search queries that map to Solr and Blacklight fields.
+Provides for CQL search queries that map to Solr and Blacklight fields. http://www.loc.gov/standards/sru/specs/cql.html
 
 
 = Installation
@@ -80,7 +80,7 @@ Note that at present only the custom solr.dismax relation is supported on Blackl
 
 == URL cql key, and cql label
 
-A psuedo-blacklight-search-field is added by the Cql plugin to indicate a CQL search in the URL and BL processing.  You can change the definition of this psuedo-field however you want to change the URL search_field key, the label for a CQL search echoed back to the user in HTML, or even to add some additional Solr parameters for the top-level Solr query for CQL searches. The value is a hash with the same semantics as other Blacklight.config[:search_fields] elements.  
+A psuedo-blacklight-search-field is added by the Cql plugin to indicate a CQL search in the URL and BL processing.  You can change the definition of this psuedo-field however you want: to change the URL search_field key, the label for a CQL search echoed back to the user in HTML, or even to add some additional Solr parameters for the top-level Solr query for CQL searches. The value is a hash with the same semantics as other Blacklight.config[:search_fields] elements.  
 
 In an initializer:
  BlacklightCql::SolrHelperExtension.psuedo_search_field = {
@@ -98,7 +98,7 @@ All fields configured in Blacklight.config[:search_fields] are available as CQL 
 
   Blacklight.config[:search_fields] << {:key => "only_in_cql", :show_in_simple_select => false, :local_solr_parameters => { :qf => "$my_special_qf"}} 
 
-As in the example above, you may want to use :local_solr_parameters referencing dollar-sign parameters that will be defined in your solrconfig.xml and de-referenced by Solr. This will keep your CQL-generated Solr querries a lot more readable in your logs and debugging. However, this feature is not available in Blacklight 2.5 (edge, or future 2.6). 
+As in the example above, you may want to use :local_solr_parameters referencing dollar-sign parameters that will be defined in your solrconfig.xml and de-referenced by Solr. This will keep your CQL-generated Solr querries a lot more readable in your logs and debugging.  
   
 Simply supplying literal values in :solr_paramaters is also supported and will work fine, it will just result in very long search querries in your solr query log.
 
