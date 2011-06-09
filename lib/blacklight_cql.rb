@@ -2,6 +2,9 @@
 
 require 'blacklight_cql/blacklight_to_solr'
 
+require 'blacklight_cql/version'
+require 'blacklight_cql/engine'
+
 module BlacklightCql
 mattr_accessor :cql_search_field_key
   self.cql_search_field_key = "cql"
