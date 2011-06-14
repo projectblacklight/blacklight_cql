@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "blacklight"
 
-  s.files = Dir["lib/**/*", "app/**/*", "config/**/*"]    
+  s.files = Dir["lib/**/*", "app/**/*", "config/**/*", "VERSION"]    
   s.test_files    = Dir["app_root/**/*", "spec/**/*"]
   
   s.require_paths = ["lib"]
