@@ -17,7 +17,7 @@ Rails3/Blacklight3, add
 
   gem 'blacklight_cql'
 
-to app's Gemfile, and run 'bundle install'. 
+to app's Gemfile, and run 'bundle install'. (Ensure you have at least 1.0.0pre1 if upgrading from Rails2)
 
 Rails2/Blacklight2, last version known good is 0.9.0. Add to your local app's environment.rb:
 
