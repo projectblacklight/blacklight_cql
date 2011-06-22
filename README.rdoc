@@ -11,10 +11,19 @@ Provides for CQL search queries that map to Solr and Blacklight fields. http://w
 
 = Installation
 
-Add to your local app's environment.rb:
- config.gem "blacklight_cql"
+Installs as an ordinary gem. 
 
-Run "sudo rake gems:install".  That's it, you now have CQL support in your Blacklight.  
+Rails3/Blacklight3, add 
+
+  gem 'blacklight_cql'
+
+to app's Gemfile, and run 'bundle install'. 
+
+Rails2/Blacklight2, last version known good is 0.9.0. Add to your local app's environment.rb:
+
+ config.gem "blacklight_cql", "0.9.0"
+
+Run "sudo rake gems:install". 
 
 See below for optional configuration to change default behavior.
 
