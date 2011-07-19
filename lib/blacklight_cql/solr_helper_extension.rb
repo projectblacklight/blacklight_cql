@@ -7,7 +7,9 @@
 # alias_method_chain instead, thankfully we do not. 
 module BlacklightCql::SolrHelperExtension
     mattr_accessor :pseudo_search_field
-    self.pseudo_search_field = {:key => "cql", :display_label => "External Search (CQL)", :include_in_simple_select => false}
+    # :advanced_parse_q => false, tells the AdvancedSearchPlugin not to try
+    # to parse this for parens and booleans, we're taking care of it! 
+    self.pseudo_search_field = {:key => "cql", :display_label => "External Search (CQL)", :include_in_simple_select => false, :advanced_parse_q => false}
 
     # Over-ride solr_search_params to do special CQL-to-complex-solr-query
     # processing iff the "search_field" is our pseudo-search-field indicating
