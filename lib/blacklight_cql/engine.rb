@@ -18,6 +18,16 @@ module BlacklightCql
     config.after_initialize do
       Blacklight.config[:search_fields] << BlacklightCql::SolrHelperExtension.pseudo_search_field
     end
+    
+
+   
+    require 'blacklight_cql/route_sets'
+    initializer "blacklight.cql.routes" do   
+      if defined? Blacklight::Routes 
+        Blacklight::Routes.send(:include, BlacklightCql::RouteSets)
+      end
+    end
+      
 
     
     # Wrapping in Dispatcher.to_prepare will, theoretically, take care of things
