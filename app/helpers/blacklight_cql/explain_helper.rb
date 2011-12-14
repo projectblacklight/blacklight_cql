@@ -21,11 +21,10 @@ module BlacklightCql::ExplainHelper
     end
   end
 
-  # Expects an object in @field_config that implements
-  # Blacklight::SearchFields to provide search field config.
-  # argument is a Builder object we can write to. 
+  # Expects @config to have a Blacklight::Configuration
+  # object. 
   def blacklight_config_to_explain_index(xml)
-    @field_config.search_field_list.each do |search_field|
+    @config.search_fields.values.each do |search_field|
       xml.index("search" => "true", "scan" => "false", "sort" => "false") do
         xml.title search_field[:display_label]
         xml.map do

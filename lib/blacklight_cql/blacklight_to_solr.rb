@@ -49,7 +49,7 @@ module CqlRuby
         (index_prefix, index) = parse_index(@index, config)
                                                         
         if (index_prefix == CqlRuby.to_solr_defaults[:blacklight_field_prefix])                
-           field_def = config.search_field_def_for_key(index)
+           field_def = config.search_fields[index]
            
            # Merge together solr params and local ones; they're ALL
            # going to be provided as LocalParams in our nested query.
@@ -101,7 +101,7 @@ module CqlRuby
           end
           # If no prefix, we use local one if we can
           if ( index_prefix == nil)
-            if ( config.search_field_def_for_key(index) )
+            if ( config.search_fields[index] )
                 index_prefix = CqlRuby.to_solr_defaults[:blacklight_field_prefix]
             else
                 index_prefix = CqlRuby.to_solr_defaults[:solr_field_prefix]

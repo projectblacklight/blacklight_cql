@@ -6,7 +6,7 @@ module BlacklightCql
     
     def index
        @luke_response = Blacklight.solr.luke
-       @field_config = Blacklight
+       @config = CatalogController.blacklight_config
        
        render "explain.xml.builder", :content_type => "application/xml"
     end

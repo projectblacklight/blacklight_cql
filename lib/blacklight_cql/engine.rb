@@ -15,8 +15,11 @@ module BlacklightCql
     # Call in after_initialze to make sure the default search_fields are
     # already created, AND the local app has had the opportunity to customize
     # our placeholder search_field.
-    config.after_initialize do
-      Blacklight.config[:search_fields] << BlacklightCql::SolrHelperExtension.pseudo_search_field
+    config.after_initialize do      
+      CatalogController.blacklight_config.configure do |config|
+        hash = BlacklightCql::SolrHelperExtension.pseudo_search_field
+        config.add_search_field hash[:key], hash
+      end
     end
     
 

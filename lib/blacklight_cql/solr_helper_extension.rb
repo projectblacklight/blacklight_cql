@@ -19,7 +19,7 @@ module BlacklightCql::SolrHelperExtension
     
       if params["search_field"] == self.pseudo_search_field[:key] && ! params["q"].blank?
         parser = CqlRuby::CqlParser.new
-        solr_params[:q] = "{!lucene} " + parser.parse( params["q"] ).to_bl_solr(Blacklight)     
+        solr_params[:q] = "{!lucene} " + parser.parse( params["q"] ).to_bl_solr(blacklight_config)     
       end
       return solr_params
     end
