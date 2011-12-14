@@ -94,7 +94,7 @@ A psuedo-blacklight-search-field is added by the Cql plugin to indicate a CQL se
 In an initializer:
  BlacklightCql::SolrHelperExtension.psuedo_search_field = {
   :key => "super_search", 
-  :display_label => "The Super Search",
+  :label => "The Super Search",
   :solr_parameters => { "mm" => "100%" },
   :show_in_simple_select => false
  }
