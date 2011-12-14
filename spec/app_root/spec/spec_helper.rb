@@ -1,27 +1,12 @@
-#RAILS_ROOT = "#{File.dirname(__FILE__)}/.."
-
-# Set the default environment to sqlite3's in_memory database
-ENV['RAILS_ENV'] ||= 'test'
-
-# Load the Rails environment from our dummy test_app. 
-require File.expand_path("../app_root/config/environment", __FILE__)
-
+# This file is copied to spec/ when you run 'rails generate rspec:install'
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 
-
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-
-MARC_DATA_PATH = "#{File.dirname(__FILE__)}/marc_data"
-
-# Undo changes to RAILS_ENV
-silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
-
-# Run the migrations
-ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
-
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
   # == Mock Framework
@@ -45,13 +30,4 @@ RSpec.configure do |config|
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
-  
-  
-  ##
-  # Load CqlRuby and our local patches to it, so available for tests
-  # 
-  require 'cql_ruby'  
-  require File.expand_path(File.dirname(__FILE__) + '/../lib/blacklight_cql/blacklight_to_solr.rb')
-
 end
-

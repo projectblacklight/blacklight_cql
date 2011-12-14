@@ -19,8 +19,15 @@ Gem::Specification.new do |s|
 
 
   s.add_dependency "rails", "~> 3.0"
-  s.add_dependency "blacklight", ">= 3.0.0pre4", "< 4.0.0"
+  s.add_dependency "blacklight", ">= 3.2.0pre2", "< 4.0.0"
   s.add_dependency "cql-ruby", ">=0.8.1"
+  
+  
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec-rails", "~> 2.6"
+  s.add_development_dependency "nokogiri"
+  
+  
 
 end
 

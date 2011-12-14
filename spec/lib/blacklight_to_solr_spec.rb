@@ -3,36 +3,17 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "blacklight_to_solr" do
   before do
-    @config = Class.new do
-      include Blacklight::SearchFields
-
-      def config
-        {
-          :search_fields => [
-            {
-              :display_label => "Title",
-              :key => "title",
-              :solr_parameters => {
-                :qf => "ti_something"
-              },
-              :solr_local_parameters => {
-                :pf => "$ti_something"
-              }
-            },
-            {
-              :display_label => "Author",
-              :key => "author",
-              :solr_parameters => {
-                :qf => "au_something^10 au_else^100"
-              }            
-            }
-          
-          ]
-        }
+    @config = Blacklight::Configuration.new do |conf| 
+      conf.add_search_field "title" do |field|
+        field.solr_parameters = {  :qf => "ti_something" }
+        field.solr_local_parameters = { :pf => "$ti_something" }
       end
       
-    end.new
+      conf.add_search_field "author" do |field|
+        field.solr_parameters = {  :qf => "au_something^10 au_else^100" }
+      end
 
+    end  
     @parser = CqlRuby::CqlParser.new
   end
 
