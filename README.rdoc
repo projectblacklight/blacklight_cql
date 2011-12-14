@@ -130,6 +130,9 @@ Eg:
   
 = TO DO
 
+* Right now, this plugin adds behavior onto (and based on config in) CatalogController. If BL ever succesfully moves to place where your controller
+doesn't need to be named that, or you can have multiple controllers, this will need to be refactored for that abstraction, and let you decide which controllers to add CQL searching to.  Right now, it assumes CatalogController in a bunch of places. Probably instead could be a module you actually explicitly include in
+CatalogController yourself, and it does everything via ActiveSupport::Concern hooks. 
 * Support more CQL relations on blacklight dismax fields. Right now only dismax queries are supported. We could also support:
   * cql.all (set mm to 100%)
   * cql.adj (phrase search with qs set to 0)
@@ -143,6 +146,7 @@ Eg:
 * Support relation modifier on cql.adj that maps to qs
 * support CQL context set 'fuzzy' modifier, to have some effect on mm, ps, qs, etc. 
 * Allow you to specify in config mappings from DC or other existing context sets to your local indexes, which would then be advertised in the Explain. 
+
 
 = Use without Blacklight?
 
