@@ -11,7 +11,7 @@ module BlacklightCql::SolrHelperExtension
     mattr_accessor :pseudo_search_field
     # :advanced_parse_q => false, tells the AdvancedSearchPlugin not to try
     # to parse this for parens and booleans, we're taking care of it! 
-    self.pseudo_search_field = {:key => "cql", :display_label => "External Search (CQL)", :include_in_simple_select => false, :advanced_parse_q => false}
+    self.pseudo_search_field = {:key => "cql", :label => "External Search (CQL)", :include_in_simple_select => false, :advanced_parse_q => false}
 
     included do
       solr_search_params_logic << :cql_to_solr_search_params

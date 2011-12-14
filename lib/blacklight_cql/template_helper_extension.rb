@@ -11,7 +11,7 @@ module BlacklightCql::TemplateHelperExtension
     if params[:q].blank? || params[:search_field] != field[:key]
       super
     else      
-      super.clone.push([field[:display_label], field[:key]]).uniq
+      super.clone.push([field[:label], field[:key]]).uniq
     end
   end
   

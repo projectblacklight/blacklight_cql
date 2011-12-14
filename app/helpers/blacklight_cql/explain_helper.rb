@@ -26,7 +26,7 @@ module BlacklightCql::ExplainHelper
   def blacklight_config_to_explain_index(xml)
     @config.search_fields.values.each do |search_field|
       xml.index("search" => "true", "scan" => "false", "sort" => "false") do
-        xml.title search_field[:display_label]
+        xml.title search_field[:label]
         xml.map do
           xml.name(search_field[:key], "set" => CqlRuby.to_solr_defaults[:blacklight_field_prefix]) 
         end
