@@ -54,9 +54,9 @@ describe "SRU/ZeeRex explain view" do
   end
 
   it "should render a valid ZeeRex 2.0 xml document" do
-    schema = File.open(File.expand_path(File.dirname(__FILE__) + "/../data/zeerex-2.0.xsd")).read
+    xsd = Nokogiri::XML::Schema(File.read(File.expand_path(File.dirname(__FILE__) + "/../data/zeerex-2.0.xsd")))
     
-    #response.body.should be_valid_with_schema(schema)
+    assert (xsd.valid? @rendered_xml)        
   end
   
   it "should start with an explain element" do
