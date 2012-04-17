@@ -44,7 +44,7 @@ describe "SRU/ZeeRex explain view" do
       YAML::load( File.open( File.expand_path(File.dirname(__FILE__) + '/../data/luke.yaml') ) )
     )
 
-    render :template => "blacklight_cql/explain/explain.xml.builder"
+    render :template => "blacklight_cql/explain/explain", :formats => [:xml]
     @rendered_xml = Nokogiri::XML(rendered.to_s)
     @ns = {"ex" => "http://explain.z3950.org/dtd/2.0/"}
 
@@ -85,10 +85,8 @@ describe "SRU/ZeeRex explain view" do
     indexInfo = @rendered_xml.at_xpath("//ex:indexInfo", @ns)
     
     indexInfo.should_not be_nil
-    
-    index_info
-    
-    response.should have_tag("indexInfo") do
+            
+    response.should have_selector("indexInfo") do
       with_tag("set[name=#{CqlRuby.to_solr_defaults[:solr_field_prefix]}][identifier='#{ 
               url_for(:controller => "/catalog",
                       :action => "index",
