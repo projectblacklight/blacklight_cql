@@ -5,4 +5,8 @@ source "http://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'combustion'
+gem 'blacklight', :git => 'git://github.com/projectblacklight/blacklight.git'
+gem "ruby-debug", :platform => :ruby_18
+gem "capybara"
 

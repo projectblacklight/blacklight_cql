@@ -1,13 +1,19 @@
 #RAILS_ROOT = "#{File.dirname(__FILE__)}/.."
+require 'rubygems'
+require 'bundler'
+
+Bundler.require :default, :development
 
 # Set the default environment to sqlite3's in_memory database
 ENV['RAILS_ENV'] ||= 'test'
 
-# Load the Rails environment from our dummy test_app. 
-require File.expand_path("../app_root/config/environment", __FILE__)
+
+require 'blacklight/engine'
+Combustion.initialize!
 
 require 'rspec/rails'
-require 'rspec/autorun'
+require 'capybara/rspec'
+require 'capybara/rails'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -34,7 +40,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = "#{File.expand_path(File.dirname(__FILE__))}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -45,13 +51,12 @@ RSpec.configure do |config|
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
-  
+
   
   ##
   # Load CqlRuby and our local patches to it, so available for tests
   # 
   require 'cql_ruby'  
   require File.expand_path(File.dirname(__FILE__) + '/../lib/blacklight_cql/blacklight_to_solr.rb')
-
 end
 

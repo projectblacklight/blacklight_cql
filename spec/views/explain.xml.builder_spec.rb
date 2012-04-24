@@ -1,18 +1,6 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 require 'nokogiri'
-
-# I'm sorry, this isn't working yet, trying to switch up to rspec2/rails3....
-# got the embedded dummy app working in spec_helper.rb, but
-# the markup_validity gem we were using to test XML was valid isn't
-# working anymore, have to do it manually with nokogiri. 
-# Also, testing selectors against xpath isn't supported by rspec2/capybara,
-# have to do it ourselves with nokogiri, which is a huge pain. 
-#
-# Spent a bunch of hours on it, got this far, had to give up due to
-# lack of time sorry. --jrochkind 14 Dec 2011
-
-#require 'markup_validity' # for validating against XML Schema
 
 describe "SRU/ZeeRex explain view" do
   before(:all) do
@@ -50,7 +38,7 @@ describe "SRU/ZeeRex explain view" do
 
     # Put it in a rexml doc for things that can't be easily tested
     # with have_tag
-    ##@response_xml = REXML::Document.new(rendered.to_s)
+    ##@rendered_xml = REXML::Document.new(rendered.to_s)
   end
 
   it "should render a valid ZeeRex 2.0 xml document" do
@@ -82,77 +70,54 @@ describe "SRU/ZeeRex explain view" do
   end
 
   it "should include an indexInfo with context set prefixes" do
-    pending "have to rewrite for nokogiri"
     
     indexInfo = @rendered_xml.at_xpath("//ex:indexInfo", @ns)
     
     indexInfo.should_not be_nil
-            
-    response.should have_selector("indexInfo") do
-      with_tag("set[name=#{CqlRuby.to_solr_defaults[:solr_field_prefix]}][identifier='#{ 
+
+    indexInfo.xpath("ex:set[@name=#{CqlRuby.to_solr_defaults[:solr_field_prefix]}][@identifier='#{ 
               url_for(:controller => "/catalog",
                       :action => "index",
                       :anchor => "local_solr_field",
-                      :only_path => false)}']")
-      with_tag("set[name=#{CqlRuby.to_solr_defaults[:blacklight_field_prefix]}][identifier='#{ 
+                      :only_path => false)}']", @ns).should_not be_nil
+     indexInfo.xpath("ex:set[@name=#{CqlRuby.to_solr_defaults[:blacklight_field_prefix]}][@identifier='#{ 
               url_for(:controller => "/catalog",
                       :action => "index",
                       :anchor => "local_app_field",
-                      :only_path => false)}']")
-      with_tag("set[name=solr][identifier='http://purl.org/net/cql-context-set/solr']")
-    end
+                      :only_path => false)}']", @ns).should_not be_nil
+      indexInfo.xpath("ex:set[name=solr][identifier='http://purl.org/net/cql-context-set/solr']", @ns).should_not be_nil
   end
 
   describe "for the config'd dismax field with :key 'title'" do
     
     before do
-      pending "have to rewrite for nokogiri"
-      @title_index_el =  @response_xml.get_elements("/explain/indexInfo/index").find {|e| e.elements["title"].text == "Title" }.to_s  
+      @title_index_el =  @rendered_xml.xpath("/ex:explain/ex:indexInfo/ex:index[ex:title/text() = 'Title']", @ns).first
     end
     
     it "should have an indexInfo block" do    
       @title_index_el.should_not be_nil
     end
     it "should have explain title 'Title'" do
-      @title_index_el.should have_tag("title", :text => "Title")
+      @title_index_el.xpath('ex:title', @ns).first.text.should == "Title"
     end
     it "should have a map element with proper context set" do
-      @title_index_el.should have_tag("map") do
-        with_tag("name[set=#{CqlRuby.to_solr_defaults[:blacklight_field_prefix]}]", 
-                  :text => "title")            
-      end
+      @title_index_el.xpath("ex:map/ex:name[@set='#{CqlRuby.to_solr_defaults[:blacklight_field_prefix]}']", @ns).first.text.should ==  "title"
     end
     it "should have configInfo with exactly two relations" do
-      @title_index_el.should have_tag("configInfo") do
-        with_tag("supports", :count => 2)
-        with_tag("supports[type=relation]", :text=> "=")
-        with_tag("supports[type=relation]", :text=> "solr.dismax")
-      end
+      @title_index_el.xpath("ex:configInfo/ex:supports", @ns).length.should == 2
+      @title_index_el.xpath("ex:configInfo/ex:supports[@type='relation']", @ns).map { |x| x.text }.should include('=', 'solr.dismax')
     end
   end
 
   it "should include an indexed solr field from luke response" do
-    pending "have to rewrite for nokogiri"
+    solr_index_el =  @rendered_xml.xpath("/ex:explain/ex:indexInfo/ex:index[ex:title='subject_unstem_search']", @ns).first
 
-    
-    solr_index_el =  @response_xml.get_elements("/explain/indexInfo/index").find {|e| e.elements["title"].text == "subject_unstem_search" }.to_s
+    solr_index_el.xpath("ex:map/ex:name[@set='#{CqlRuby.to_solr_defaults[:solr_field_prefix]}']", @ns).text.should == "subject_unstem_search"
 
-    solr_index_el.should have_tag("map") do
-      with_tag("name[set=#{CqlRuby.to_solr_defaults[:solr_field_prefix]}]", 
-                :text => "subject_unstem_search")
-    end
-
-    solr_index_el.should have_tag("configInfo") do
-      ["==", "=", "&gt;=", "&gt;", "&lt;=", "&lt;", "&lt;&gt;", "within", "adj", "all", "any"].each do |relation|
-        with_tag("supports[type=relation]", :text => relation)
-      end
-    end
+    solr_index_el.xpath("ex:configInfo/ex:supports[@type='relation']", @ns).map { |x| x.text }.should include("==", "=", ">=", ">", "<=", "<", "<>", "within", "adj", "all", "any")
   end
 
-  it "should not include a non-indexed solr field from luke response" do    
-    pending "have to rewrite for nokogiri"
-
-    
-    @response_xml.get_elements("/explain/indexInfo/index").find {|e| e.elements["title"].text == "url_suppl_display" }.should be_nil
+  it "should not include a non-indexed solr field from luke response" do
+    @rendered_xml.xpath("/explain/indexInfo/index").find {|e| e.elements["title"].text == "url_suppl_display" }.should be_nil
   end
 end
