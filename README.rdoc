@@ -84,7 +84,7 @@ To activate the explain response, add this line to your CatalogController or equ
 
     include BlacklightCql::ExplainBehavior
 
-Then add this line or equivalent to your config/routes.rb file:
+Then add this line or equivalent to your config/routes.rb file, _before_ the line `Blacklight.add_routes`. 
 
    get "catalog/explain" => "catalog#cql_explain"
 
