@@ -6,6 +6,7 @@ require 'blacklight_cql'
 
 require 'blacklight_cql/solr_helper_extension'
 require 'blacklight_cql/template_helper_extension'
+require 'blacklight_cql/explain_behavior'
 
 
 module BlacklightCql
@@ -22,17 +23,7 @@ module BlacklightCql
       end
     end
     
-
-   
-    require 'blacklight_cql/route_sets'
-    initializer "blacklight.cql.routes" do   
-      if defined? Blacklight::Routes 
-        Blacklight::Routes.send(:include, BlacklightCql::RouteSets)
-      end
-    end
-      
-
-    
+ 
     # Wrapping in Dispatcher.to_prepare will, theoretically, take care of things
     # working properly even in development mode with cache_classes=false (per-request
     # class reloading).

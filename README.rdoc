@@ -76,7 +76,21 @@ For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your 
 
 This plugin does *not* provide a full SRU/SRW server. However, a ZeeRex/SRU explain document is provided by the plugin to advertise, in machine-readable format, what CQL indexes (ie, search fields) are provided by the server, and what relations are supported on each search field. http://explain.z3950.org/
 
-The explain document can be found at /catalog/explain on your server. (This URL end-point is not presently configurable). 
+It's highly recommended to activate the explain response, for debugging or machine-readable field availability. 
+
+== Activating the explain response
+
+To activate the explain response, add this line to your CatalogController or equivalent:
+
+    include BlacklightCql::ExplainBehavior
+
+Then add this line or equivalent to your config/routes.rb file:
+
+   get "catalog/explain" => "catalog#cql_explain"
+
+The explain document will then be found at 'catalog/explain' on your server. 
+
+== Nature of explain response
 
 For solr fields themselves, the plugin finds them via a Solr luke request, looking for any field that is Indexed in solr,  and advertising it. (If you have configured lucene indexes directly not through solr, they will likely be erroneously included in the explain as well). 
 
