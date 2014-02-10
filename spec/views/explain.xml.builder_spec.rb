@@ -8,13 +8,13 @@ describe "SRU/ZeeRex explain view" do
     # no docs actually told me to do this, I just made it up. hell if I know
     # just trying to figure out how to make tests work. 
     Rails.application.routes.draw do
-      match ':controller(/:action(/:id(.:format)))'
+      get ':controller(/:action(/:id(.:format)))'
     end
   end
   
   before do
         
-    assign(:config,    
+    @config = 
       Blacklight::Configuration.new do |conf| 
         conf.add_search_field("title") do
           solr_parameters = {:qf => "something"}
@@ -26,13 +26,13 @@ describe "SRU/ZeeRex explain view" do
         end
         
       end
-    )
     
-    assign(:luke_response,
+    
+    @luke_response = 
       YAML::load( File.open( File.expand_path(File.dirname(__FILE__) + '/../data/luke.yaml') ) )
-    )
+    
 
-    render :template => "blacklight_cql/explain/explain", :formats => [:xml]
+    render :template => "blacklight_cql/explain", :formats => [:xml]
     @rendered_xml = Nokogiri::XML(rendered.to_s)
     @ns = {"ex" => "http://explain.z3950.org/dtd/2.0/"}
 
@@ -64,9 +64,9 @@ describe "SRU/ZeeRex explain view" do
     server_info.at_xpath("./ex:host[text()='test.host']", "ex" => "http://explain.z3950.org/dtd/2.0/").should_not be_nil
     server_info.at_xpath("./ex:port[text()='80']", "ex" => "http://explain.z3950.org/dtd/2.0/").should_not be_nil
     
-    explain_url = url_for(:controller => "/catalog", :action => "index", :search_field => BlacklightCql::SolrHelperExtension.pseudo_search_field[:key])
+    explain_url = url_for(:only_path => false, :action => "index", :search_field => BlacklightCql::SolrHelperExtension.pseudo_search_field[:key])
     
-    server_info.at_xpath("./ex:database[text()='#{explain_url}']", "ex" => "http://explain.z3950.org/dtd/2.0/").should_not be_nil
+    expect(server_info.at_xpath("./ex:database", "ex" => "http://explain.z3950.org/dtd/2.0/").text()).to eq(explain_url)
   end
 
   it "should include an indexInfo with context set prefixes" do
