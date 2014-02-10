@@ -11,3 +11,8 @@ end
 
 Bundler::GemHelper.install_tasks
 
+desc "Create dummy app and run tests"
+task :ci => ['engine_cart:clean', 'engine_cart:generate', 'spec'] do
+end
+
+task :default => [:ci]
