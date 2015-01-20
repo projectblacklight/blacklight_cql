@@ -142,6 +142,16 @@ Eg:
   CqlRuby.to_solr_defaults[:all_index] = "solr_mega_index"
   CqlRuby.to_solr_defaults[:default_relation] = "cql.any"
   
+  
+= CQL gotchas
+
+CQL can be a confusing language, lacking clear documentation on escaping rules among other things. 
+
+* A double-quote should be escaped with a backslash. (Not tested to make sure actually works)
+* For mysterious reasons, a single quote (apostrophe) doesn't seem to work escaped with a backslash, but
+  with the CQL parsing libraries we're using, does work escaped with an apostrophe -- turn apostrophes
+  into double apostrophes. http://mail-archives.apache.org/mod_mbox/cassandra-user/201108.mbox/%3C20110803152250.294300@gmx.net%3E
+  
 = TO DO
 
 * Right now, this plugin adds behavior onto (and based on config in) CatalogController. If BL ever succesfully moves to place where your controller
