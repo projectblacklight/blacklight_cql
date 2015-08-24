@@ -1,5 +1,8 @@
 # Blacklight-cql
 
+[![Gem Version](https://badge.fury.io/rb/blacklight_cql.svg)](http://badge.fury.io/rb/blacklight_cql)
+
+
 An extension for the Blacklight solr search front-end.  
 
 http://projectblacklight.org
