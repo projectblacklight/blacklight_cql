@@ -33,7 +33,7 @@ You may also want to add the optional Explain handler, see below.
 
 See below for optional configuration to change default behavior.
 
-= Use
+## Usage
 
  http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
  
