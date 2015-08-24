@@ -9,7 +9,8 @@ http://projectblacklight.org
 
 http://github.com/projectblacklight/blacklight
 
-Provides for CQL search queries that map to Solr and Blacklight fields. http://www.loc.gov/standards/sru/specs/cql.html
+Provides for CQL search queries that map to Solr and Blacklight fields. http://www.loc.gov/standards/sru/cql/
+
 
 
 ## Installation
@@ -41,7 +42,7 @@ Or for an atom response for instance,
 
     http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
 
-See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
+See http://www.loc.gov/standards/sru/cql/ for more info on CQL syntax and semantics. 
  
 Any search_field you have configured in `Blacklight.config[:search_fields]` (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a dismax expression as a value. They are referenced in the CQL by their :key in the BL config. 
 
@@ -55,7 +56,7 @@ Any Solr indexed field is also available as a CQL index. A much greater range of
 
     solr_field cql.adj "some phrase" AND solr_year within "1990 2000"
   
-Solr indexed field CQL support is provided by the cql_ruby gem, for details on relations supported see: http://cql-ruby.rubyforge.org/svn/trunk/lib/cql_ruby/cql_to_solr.rb
+Solr indexed field CQL support is provided by the cql_ruby gem, for details on relations supported see: https://github.com/jrochkind/cql-ruby/blob/master/lib/cql_ruby/cql_to_solr.rb
   
 If there is a direct solr indexed field with the same name as a Blacklight-configured dismax field, the BL field will take precedence. You can use explicit CQL "context set" prefixes to disambiguate.
 
