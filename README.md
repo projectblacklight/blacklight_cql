@@ -118,7 +118,7 @@ In an initializer:
 
 Or leave out the `:show_in_simple_select => false` to make manual CQL entry an option in your BL search.  
  
-== Dismax search field configuration
+### Dismax search field configuration
  
 All fields configured in `Blacklight.config[:search_fields]` are available as CQL indexes. If you'd like to make more dismax-configured search fields available via a CQL search, but not the standard HTML search select menu, simply add them with :show_in_simple_select = false, eg:
 
@@ -128,14 +128,14 @@ As in the example above, you may want to use :local_solr_parameters referencing 
   
 Simply supplying literal values in :solr_paramaters is also supported and will work fine, it will just result in very long search querries in your solr query log.
 
-== CQL context set prefixes
+### CQL context set prefixes
 
 You can change the CQL "context set" prefix used for specifying a CQL index that is a direct solr field, or a Blacklight dismax configured field.  In a Rails initializer:
 
     CqlRuby.to_solr_defaults[:solr_field_prefix] = "my_solr"
     CqlRuby.to_solr_defaults[:blacklight_field_prefix] = "my_blacklight_fields"
 
-== Defaults from CqlRuby for direct solr indexed field querries. 
+### Defaults from CqlRuby for direct solr indexed field querries. 
 
 For direct-solr-field operations, there are additional defaults that can be set, supported by CqlRuby. See: http://cql-ruby.rubyforge.org/svn/trunk/lib/cql_ruby/cql_to_solr.rb
 
@@ -146,7 +146,7 @@ Eg:
     CqlRuby.to_solr_defaults[:default_relation] = "cql.any"
   
   
-= CQL gotchas
+## CQL gotchas
 
 CQL can be a confusing language, lacking clear documentation on escaping rules among other things. 
 
