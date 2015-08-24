@@ -5,7 +5,7 @@ xml.explain("xmlns" => "http://explain.z3950.org/dtd/2.0/") do
   xml.serverInfo("protocol" => "http-cql") do
     xml.host request.host
     xml.port request.port
-    xml.database url_for(:action => "index", :search_field => BlacklightCql::SolrHelperExtension.pseudo_search_field[:key], :only_path => false)
+    xml.database url_for(:action => "index", :search_field => BlacklightCql::SearchBuilderExtension.pseudo_search_field[:key], :only_path => false)
   end
 
   xml.indexInfo do

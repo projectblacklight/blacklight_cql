@@ -1,11 +1,10 @@
-# We over-ride methods on CatalogController simply by include'ing this
-# module into CatalogController, which this plugins setup will do.
+# Mix-in to a SearchBuilder
 #
-# This works ONLY becuase the methods we're over-riding come from
-# a module themsleves (SolrHelper) -- if they were defined on CatalogController
-# itself, it would not, and we'd have to use some ugly monkey patching
-# alias_method_chain instead, thankfully we do not. 
-module BlacklightCql::SolrHelperExtension
+# => Adds logic for handling CQL queries, and adds it to the default_processor_chain
+#
+# If you are still using CatalogController#search_params_logic, you will need to add
+# :cql_to_solr_search_params to it. 
+module BlacklightCql::SearchBuilderExtension
     extend ActiveSupport::Concern
   
     mattr_accessor :pseudo_search_field
@@ -18,16 +17,18 @@ module BlacklightCql::SolrHelperExtension
     }
 
     included do
-      solr_search_params_logic << :cql_to_solr_search_params
+      self.default_processor_chain << :cql_to_solr_search_params
     end
     
     # Over-ride solr_search_params to do special CQL-to-complex-solr-query
     # processing iff the "search_field" is our pseudo-search-field indicating
     # a CQL query.
-    def cql_to_solr_search_params(solr_params ={}, user_params ={})
-      if user_params["search_field"] == self.pseudo_search_field[:key] && ! params["q"].blank?
+    def cql_to_solr_search_params(solr_params)
+
+      if blacklight_params["search_field"] == self.pseudo_search_field[:key] && ! blacklight_params["q"].blank?
         parser = CqlRuby::CqlParser.new
-        solr_params[:q] = "{!lucene} " + parser.parse( params["q"] ).to_bl_solr(blacklight_config)     
+
+        solr_params[:q] = "{!lucene} " + parser.parse( blacklight_params["q"] ).to_bl_solr(self.blacklight_config)     
       end
       return solr_params
     end
