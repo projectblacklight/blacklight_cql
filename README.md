@@ -35,11 +35,11 @@ See below for optional configuration to change default behavior.
 
 ## Usage
 
-   http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
+    http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
  
 Or for an atom response for instance, 
 
-   http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
+    http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
 
 See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
  
