@@ -35,44 +35,42 @@ See below for optional configuration to change default behavior.
 
 ## Usage
 
- http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
+   http://your.blacklight.com/catalog?search_field=cql&q=[uri-encoded cql query]
  
 Or for an atom response for instance, 
 
- http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
+   http://your.blacklight.com/catalog.atom?search_field=cql&q=[uri-encoded cql query]
 
 See http://www.loc.gov/standards/sru/specs/cql.html for more info on CQL syntax and semantics. 
  
-Any search_field you have configured in Blacklight.config[:search_fields] (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a dismax expression as a value. They are referenced in the CQL by their :key in the BL config. 
+Any search_field you have configured in `Blacklight.config[:search_fields]` (probably in your config/blacklight_config.rb) is available as a CQL index.  These search fields are only available with the custom "solr.dismax" CQL relation, taking a dismax expression as a value. They are referenced in the CQL by their :key in the BL config. 
 
-  some_field solr.dismax "term +required -negate \"a phrase\" "
+    some_field solr.dismax "term +required -negate \"a phrase\" "
   
 For dismax fields, the "=" server-choice relation means the same thing:
 
-  some_field = "term +required -negate \"a phrase\" "
+    some_field = "term +required -negate \"a phrase\" "
 
 Any Solr indexed field is also available as a CQL index. A much greater range of CQL relations are supported when you specify a Solr indexed field directly.  
 
-  solr_field cql.adj "some phrase" AND solr_year within "1990 2000"
+    solr_field cql.adj "some phrase" AND solr_year within "1990 2000"
   
 Solr indexed field CQL support is provided by the cql_ruby gem, for details on relations supported see: http://cql-ruby.rubyforge.org/svn/trunk/lib/cql_ruby/cql_to_solr.rb
   
 If there is a direct solr indexed field with the same name as a Blacklight-configured dismax field, the BL field will take precedence. You can use explicit CQL "context set" prefixes to disambiguate.
 
-[lsolr.field]
-  "lsolr" prefix, "local solr", means a direct solr indexed field 
-[local.some_field]
-  "local" prefix means a dismax field configured in Blacklight.config[:search_fields]
+* `lsolr.field` "lsolr" prefix, "local solr", means a direct solr indexed field 
+* `local.some_field` "local" prefix means a dismax field configured in Blacklight.config[:search_fields]
 
 These prefixes can be changed, see configuration below. 
 
 Raw solr fields and Blacklight config'ed fields CAN be mixed together in a single CQL query. 
 
-  (lsolr.title_t any "one two three" AND lsolr.author_t all "smith john") OR local.title = "my dismax title query"
+    (lsolr.title_t any "one two three" AND lsolr.author_t all "smith john") OR local.title = "my dismax title query"
   
 CQL *does* need to be URL escaped in a URL, of course:
 
-  http://some.blacklight.com/catalog.atom?search_field=cql&q=%28lsolr.title_t+any+%22one+two+three%22+AND+lsolr.author_t+all+%22smith+john%22%29+OR+local.title+%3D+%22my+dismax+title+query%22
+    http://some.blacklight.com/catalog.atom?search_field=cql&q=%28lsolr.title_t+any+%22one+two+three%22+AND+lsolr.author_t+all+%22smith+john%22%29+OR+local.title+%3D+%22my+dismax+title+query%22
 
 For "solr.dismax" or "=" relations, the the cql.serverChoice index maps to your default blacklight-configed field and solr.dismax relation.  cql.serverChoice used with other relations will map to a solr indexed field, usually 'text' although that can depend on your configuration (both solr and plugin config). 
 
@@ -90,7 +88,7 @@ To activate the explain response, add this line to your CatalogController or equ
 
 Then add this line or equivalent to your config/routes.rb file, _before_ the line `Blacklight.add_routes`. 
 
-   get "catalog/explain" => "catalog#cql_explain"
+    get "catalog/explain" => "catalog#cql_explain"
 
 The explain document will then be found at 'catalog/explain' on your server. 
 
@@ -110,20 +108,21 @@ Note that at present only the custom solr.dismax relation is supported on Blackl
 A psuedo-blacklight-search-field is added by the Cql plugin to indicate a CQL search in the URL and BL processing.  You can change the definition of this psuedo-field however you want: to change the URL search_field key, the label for a CQL search echoed back to the user in HTML, or even to add some additional Solr parameters for the top-level Solr query for CQL searches. The value is a hash with the same semantics as other Blacklight.config[:search_fields] elements.  
 
 In an initializer:
- BlacklightCql::SearchBuilderExtension.psuedo_search_field = {
-  :key => "super_search", 
-  :label => "The Super Search",
-  :solr_parameters => { "mm" => "100%" },
-  :show_in_simple_select => false
- }
 
-Or leave out the ":show_in_simple_select => false" to make manual CQL entry an option in your BL search.  
+    BlacklightCql::SearchBuilderExtension.psuedo_search_field = {
+      :key => "super_search", 
+      :label => "The Super Search",
+      :solr_parameters => { "mm" => "100%" },
+      :show_in_simple_select => false
+    }
+
+Or leave out the `:show_in_simple_select => false` to make manual CQL entry an option in your BL search.  
  
 == Dismax search field configuration
  
-All fields configured in Blacklight.config[:search_fields] are available as CQL indexes. If you'd like to make more dismax-configured search fields available via a CQL search, but not the standard HTML search select menu, simply add them with :show_in_simple_select = false, eg:
+All fields configured in `Blacklight.config[:search_fields]` are available as CQL indexes. If you'd like to make more dismax-configured search fields available via a CQL search, but not the standard HTML search select menu, simply add them with :show_in_simple_select = false, eg:
 
-  Blacklight.config[:search_fields] << {:key => "only_in_cql", :show_in_simple_select => false, :local_solr_parameters => { :qf => "$my_special_qf"}} 
+    Blacklight.config[:search_fields] << {:key => "only_in_cql", :show_in_simple_select => false, :local_solr_parameters => { :qf => "$my_special_qf"}} 
 
 As in the example above, you may want to use :local_solr_parameters referencing dollar-sign parameters that will be defined in your solrconfig.xml and de-referenced by Solr. This will keep your CQL-generated Solr querries a lot more readable in your logs and debugging.  
   
@@ -133,8 +132,8 @@ Simply supplying literal values in :solr_paramaters is also supported and will w
 
 You can change the CQL "context set" prefix used for specifying a CQL index that is a direct solr field, or a Blacklight dismax configured field.  In a Rails initializer:
 
- CqlRuby.to_solr_defaults[:solr_field_prefix] = "my_solr"
- CqlRuby.to_solr_defaults[:blacklight_field_prefix] = "my_blacklight_fields"
+    CqlRuby.to_solr_defaults[:solr_field_prefix] = "my_solr"
+    CqlRuby.to_solr_defaults[:blacklight_field_prefix] = "my_blacklight_fields"
 
 == Defaults from CqlRuby for direct solr indexed field querries. 
 
@@ -142,9 +141,9 @@ For direct-solr-field operations, there are additional defaults that can be set,
 
 Eg:
 
-  CqlRuby.to_solr_defaults[:default_index] = "solr_index"
-  CqlRuby.to_solr_defaults[:all_index] = "solr_mega_index"
-  CqlRuby.to_solr_defaults[:default_relation] = "cql.any"
+    CqlRuby.to_solr_defaults[:default_index] = "solr_index"
+    CqlRuby.to_solr_defaults[:all_index] = "solr_mega_index"
+    CqlRuby.to_solr_defaults[:default_relation] = "cql.any"
   
   
 = CQL gotchas
