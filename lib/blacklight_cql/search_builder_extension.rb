@@ -13,7 +13,8 @@ module BlacklightCql::SearchBuilderExtension
     self.pseudo_search_field = {:key => "cql", :label => "External Search (CQL)", :include_in_simple_select => false, 
       # Different versions of advanced search may use different keys here (?)
       :advanced_parse_q => false, 
-      :advanced_parse => false
+      :advanced_parse => false,
+      :include_in_advanced_search => false
     }
 
     included do
