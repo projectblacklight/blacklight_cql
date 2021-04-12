@@ -24,7 +24,7 @@ mattr_accessor :cql_search_field_key
   # Escapes value for Solr LocalParam. Will wrap in
   # quotes only if needed (if not needed, and the value
   # turns out to have been a $param, then quotes will mess
-  # things up!), and escapes value inside quotes. 
+  # things up!), and escapes value inside quotes.
   def self.solr_param_quote(val)
     unless val =~ /^[a-zA-Z$_\-\^]+$/
       val = "'" + escape_quotes(val) + "'"
@@ -48,12 +48,12 @@ mattr_accessor :cql_search_field_key
   #
   # to configure for BlacklightCql
   def self.configure_controller(bl_controller_class)
-    bl_controller_class.blacklight_config.configure do |config|
+    bl_controller_class.config.configure do |config|
       hash = BlacklightCql::SolrHelperExtension.pseudo_search_field
       config.add_search_field hash[:key], hash
     end
 
     bl_controller_class.send(:helper, BlacklightCql::TemplateHelperExtension)
   end
-  
+
 end
