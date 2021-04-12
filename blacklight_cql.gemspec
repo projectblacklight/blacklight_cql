@@ -12,21 +12,20 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "blacklight"
 
-  s.files = Dir["lib/**/*", "app/**/*", "config/**/*", "VERSION"]    
+  s.files = Dir["lib/**/*", "app/**/*", "config/**/*", "VERSION"]
   s.test_files    = Dir["app_root/**/*", "spec/**/*"]
-  
+
   s.require_paths = ["lib"]
 
   s.add_dependency "rails"
-  s.add_dependency "blacklight", ">= 5.14.0", "< 7.0.0"
+  s.add_dependency "blacklight", ">= 5.14.0"
   s.add_dependency "cql-ruby", ">=0.8.1"
-  
-  
+
+
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails", "~> 2.6"
   s.add_development_dependency "nokogiri"
   s.add_development_dependency "engine_cart"
-  
+
 
 end
-
